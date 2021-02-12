@@ -1,6 +1,6 @@
-/*! PhotoSwipe Default UI - 4.1.3 - 2019-01-08
+/*! PhotoSwipe Default UI - 4.1.3 - 2021-02-12
 * http://photoswipe.com
-* Copyright (c) 2019 Dmitry Semenov; */
+* Copyright (c) 2021 Dmitry Semenov; */
 /**
 *
 * UI on top of main sliding area (caption, arrows, close button, etc.).
@@ -711,9 +711,23 @@ var PhotoSwipeUI_Default =
 
 	ui.updateIndexIndicator = function() {
 		if(_options.counterEl) {
+			if (_options.fixedDisplayTotal !== false) {
+				if (typeof _options.fixedDisplayTotal === 'string') {
+					// This is a reference to a window variable. Get the value from the variable if it exists. Otherwise show an error.
+					if (typeof window[_options.fixedDisplayTotal] !== 'undefined') {
+						_options.fixedDisplayTotal = window[_options.fixedDisplayTotal];
+					} else {
+						console.log('Photoswipe error: fixedDisplayTotal is set to reference a string variable that does not exist.');
+						_options.fixedDisplayTotal = false;
+					}
+				} else {
+					// This is a reference to a value. Just use the value, so nothing to do here.
+				}
+			}
+			
 			_indexIndicator.innerHTML = (pswp.getCurrentIndex()+1) + 
 										_options.indexIndicatorSep + 
-										_options.getNumItemsFn();
+										((_options.fixedDisplayTotal !== false) ? _options.fixedDisplayTotal : _options.getNumItemsFn());
 		}
 	};
 	

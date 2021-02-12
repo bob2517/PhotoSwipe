@@ -708,9 +708,23 @@ var PhotoSwipeUI_Default =
 
 	ui.updateIndexIndicator = function() {
 		if(_options.counterEl) {
+			if (_options.fixedDisplayTotal !== false) {
+				if (typeof _options.fixedDisplayTotal === 'string') {
+					// This is a reference to a window variable. Get the value from the variable if it exists. Otherwise show an error.
+					if (typeof window[_options.fixedDisplayTotal] !== 'undefined') {
+						_options.fixedDisplayTotal = window[_options.fixedDisplayTotal];
+					} else {
+						console.log('Photoswipe error: fixedDisplayTotal is set to reference a string variable that does not exist.');
+						_options.fixedDisplayTotal = false;
+					}
+				} else {
+					// This is a reference to a value. Just use the value, so nothing to do here.
+				}
+			}
+			
 			_indexIndicator.innerHTML = (pswp.getCurrentIndex()+1) + 
 										_options.indexIndicatorSep + 
-										_options.getNumItemsFn();
+										((_options.fixedDisplayTotal !== false) ? _options.fixedDisplayTotal : _options.getNumItemsFn());
 		}
 	};
 	
